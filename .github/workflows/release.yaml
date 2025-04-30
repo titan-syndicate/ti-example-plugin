@@ -21,18 +21,11 @@ jobs:
       - name: Build
         run: go build -o ti-example-plugin
 
-      - name: Create Tag
-        run: |
-          git tag "v$(git rev-parse --short HEAD)"
-          git push origin "v$(git rev-parse --short HEAD)"
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ github.sha }}
+          name: Release ${{ github.sha }}
           files: ti-example-plugin
           generate_release_notes: true
         env:
