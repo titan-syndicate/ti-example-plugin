@@ -26,6 +26,10 @@ jobs:
           git tag "v$(git rev-parse --short HEAD)"
           git push origin "v$(git rev-parse --short HEAD)"
 
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
