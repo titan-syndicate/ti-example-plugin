@@ -1,0 +1,25 @@
+# .goreleaser.yml
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - format: binary
+    name_template: "{{ .Binary }}"
+    # this name template makes the OS and Arch compatible with the results of `uname`.
+    name_template: >-
+      {{ .Binary }}
+      {{- title .Os }}
+      {{- if eq .Arch "amd64" }}x86_64{{ end }}
+      {{- if eq .Arch "386" }}i386{{ end }}
+      {{- if eq .Arch "arm64" }}aarch64{{ end }}
