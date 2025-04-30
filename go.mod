@@ -1,4 +1,4 @@
-module github.com/titan-syndicate/tt-example-plugin
+module github.com/titan-syndicate/ti-example-plugin
 
 go 1.24.2
 
