@@ -19,11 +19,11 @@ jobs:
         with:
           go-version: '1.22'
 
-      - name: Run GoReleaser
+      - name: GoReleaser snapshot
         uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean
+          # --snapshot tells GoReleaser to skip tag checks
+          # and treat the current commit as a snapshot version
+          args: release --clean --snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
