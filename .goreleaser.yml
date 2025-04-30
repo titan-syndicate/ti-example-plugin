@@ -1,25 +1,85 @@
-# .goreleaser.yml
-before:
-  hooks:
-    - go mod tidy
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+project_name: titanium
 
 builds:
-  - env:
-      - CGO_ENABLED=0
+  # Build for macOS AMD64
+  - id: darwin_amd64
+    main: cmd/titanium/main.go
     goos:
-      - linux
       - darwin
     goarch:
       - amd64
+    binary: ti
+    env:
+      - CGO_ENABLED=1
+
+  # Build for macOS ARM (Apple Silicon)
+  - id: darwin_arm64
+    main: cmd/titanium/main.go
+    goos:
+      - darwin
+    goarch:
       - arm64
+    binary: ti
+    env:
+      - CGO_ENABLED=1
+
+  # Build for Linux AMD64
+  - id: linux_amd64
+    main: cmd/titanium/main.go
+    goos:
+      - linux
+    goarch:
+      - amd64
+    binary: ti
+    env:
+      - CGO_ENABLED=0
+
+  # Build for Linux ARM64
+  - id: linux_arm64
+    main: cmd/titanium/main.go
+    goos:
+      - linux
+    goarch:
+      - arm64
+    binary: ti
+    env:
+      - CGO_ENABLED=0
+
+  # Build for Windows AMD64
+  - id: windows_amd64
+    main: cmd/titanium/main.go
+    goos:
+      - windows
+    goarch:
+      - amd64
+    binary: ti.exe
+    env:
+      - CGO_ENABLED=0
 
 archives:
-  - format: binary
-    name_template: "{{ .Binary }}"
-    # this name template makes the OS and Arch compatible with the results of `uname`.
-    name_template: >-
-      {{ .Binary }}
-      {{- title .Os }}
-      {{- if eq .Arch "amd64" }}x86_64{{ end }}
-      {{- if eq .Arch "386" }}i386{{ end }}
-      {{- if eq .Arch "arm64" }}aarch64{{ end }}
+  - format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
